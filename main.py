@@ -8,6 +8,7 @@ if filename == "":
     filename = "linkin.txt"
 
 fin = open(filename, "r")
+fout = open("out.txt", "w")
 
 # Variable Prepare
 PGBLOCKS = {}
@@ -77,6 +78,8 @@ while True:
             if word != []:
                 MODIFY.append(
                     {"ADDR": hex(toSignedInt(word[1]) + Offset), "LENGTH": word[2], "OPER": word[3], "PGB": word[4]})
+fin.close()
+
 
 for i in MODIFY:
     ObjLine = getObjline(i.get("ADDR"))
@@ -100,6 +103,7 @@ for i in OBJCODE:
     while len(Objc) < 32:
         Objc += "."
     i.update({"OBJC": Objc})
-    print(
-        "{0:<06s}    {1:<8s}  {2:<8s}  {3:<8s}  {4:<8s}".format(i.get("START"), i.get("OBJC")[0:8], i.get("OBJC")[8:16],
+    fout.write(
+        "{0:<06s}    {1:<8s}  {2:<8s}  {3:<8s}  {4:<8s}\n".format(i.get("START"), i.get("OBJC")[0:8], i.get("OBJC")[8:16],
                                                                 i.get("OBJC")[16:24], i.get("OBJC")[24:32]))
+fout.close()
