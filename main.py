@@ -13,11 +13,9 @@ fin = open(filename, "r")
 PGBLOCKS = {}
 MODIFY = []
 OBJCODE = []
-HexDig = {"0":"0000", "1":"0001", "2":"0010", "3":"0011", "4":"0100", "5":"0101", "6":"0110", "7":"0111", "8":"1000", "9":"1001",
-          "A":"1010", "B":"1011", "C":"1100", "D":"1101", "E":"1110", "F":"1111"}
 
 # Method Prepare
-def splitLine(line):
+def splitline(line):
     word = line.strip().split()
     return word
 
@@ -53,11 +51,11 @@ while True:
         break
     else:
         if line[0] == "H":
-            word = splitLine(line)
+            word = splitline(line)
             PGBLOCKS.update({word[1]: hex(int(word[2], 16) + Offset)[2:].upper()})
             Length = int(word[3], 16)
         elif line[0] == "D":
-            word = splitLine(line)
+            word = splitline(line)
             for i in range(1, len(word), 2):
                 PGBLOCKS.update({word[i]: word[i + 1]})
         elif line[0] == "R":
@@ -66,7 +64,7 @@ while True:
             Offset += Length
             continue
         elif line[0] == "T":
-            word = splitLine(line)
+            word = splitline(line)
             string = ""
             for i in range(3, len(word)):
                 string += word[i]
@@ -75,7 +73,7 @@ while True:
                 head = "0" + head
             OBJCODE.append({"START": head, "LENGTH": word[2], "OBJC": string})
         else:
-            word = splitLine(line)
+            word = splitline(line)
             if word != []:
                 MODIFY.append(
                     {"ADDR": hex(toSignedInt(word[1]) + Offset), "LENGTH": word[2], "OPER": word[3], "PGB": word[4]})
@@ -83,7 +81,7 @@ while True:
 for i in MODIFY:
     ObjLine = getObjline(i.get("ADDR"))
     Objc = ObjLine.get("OBJC")
-    selectStart = (int(i.get("ADDR"), 16) - int("0x"+ObjLine.get("START"), 16)) * 2
+    selectStart = (int(i.get("ADDR"), 16) - int("0x" + ObjLine.get("START"), 16)) * 2
     if int(i.get("LENGTH"), 16) % 2 == 1:
         selectStart += 1
 
